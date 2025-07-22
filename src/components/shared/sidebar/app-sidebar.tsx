@@ -26,7 +26,7 @@ const data = {
     navMain: [
       {
         title: "Dashboard",
-        url: "/user/dashboard",
+        url: "/user",
         icon: LayoutDashboard,
       },
       {
@@ -47,7 +47,6 @@ const data = {
         title: "Dashboard",
         url: "/admin/dashboard",
         icon: LayoutDashboard,
-        isActive: true,
       },
       {
         title: "Users",
