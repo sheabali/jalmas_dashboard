@@ -1,6 +1,6 @@
 import Image from "next/image";
-import GetHeaderTitle from "./GetHeaderTitle";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import GetHeaderTitle from "./GetHeaderTitle";
 
 function Header() {
   return (

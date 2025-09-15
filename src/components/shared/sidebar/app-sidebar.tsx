@@ -64,8 +64,28 @@ const data = {
         icon: User,
       },
       {
-        title: "Your Profile",
-        url: "/user/dashboard/profile",
+        title: "Question",
+        url: "/admin/dashboard/question",
+        icon: User,
+      },
+      {
+        title: "Privacy Policy",
+        url: "/admin/dashboard/privacy-policy",
+        icon: User,
+      },
+      {
+        title: "Messages",
+        url: "/admin/dashboard/messages",
+        icon: User,
+      },
+      {
+        title: "Feedback",
+        url: "/admin/dashboard/feedback",
+        icon: User,
+      },
+      {
+        title: "Profile",
+        url: "/admin/dashboard/profile",
         icon: User,
       },
       {

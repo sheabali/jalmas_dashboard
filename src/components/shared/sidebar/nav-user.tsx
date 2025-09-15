@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
 import placeholder from "@/assets/placeholders/image_placeholder.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -16,12 +15,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useGetMeQuery } from "@/redux/api/authApi";
 import { logout } from "@/redux/features/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
