@@ -1,9 +1,9 @@
-import React from "react";
+import ChangePassword from "@/components/auth/change-password";
 
 const ChangePasswordPage = () => {
   return (
     <div>
-      <h1>Change Password</h1>
+      <ChangePassword />
     </div>
   );
 };

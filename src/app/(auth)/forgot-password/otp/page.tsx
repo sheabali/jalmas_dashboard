@@ -1,9 +1,9 @@
-import LoginPage from "@/components/auth/login";
+import OTP from "@/components/auth/forgot_password/OTP";
 
 const page = () => {
   return (
     <div>
-      <LoginPage />
+      <OTP />
     </div>
   );
 };

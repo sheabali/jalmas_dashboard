@@ -1,9 +1,9 @@
-import LoginPage from "@/components/auth/login";
+import UserListPage from "@/components/users";
 
 const page = () => {
   return (
     <div>
-      <LoginPage />
+      <UserListPage />
     </div>
   );
 };

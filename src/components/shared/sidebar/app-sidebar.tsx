@@ -8,18 +8,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  HandCoins,
-  Home,
-  InfoIcon,
-  LayoutDashboard,
-  User,
-  Users,
-} from "lucide-react";
+import { HandCoins, Home, LayoutDashboard, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import Link from "next/link";
 
 const data = {
   user: {
@@ -50,20 +43,25 @@ const data = {
       },
       {
         title: "Users",
-        url: "/user/dashboard/users",
+        url: "/admin/dashboard/users",
         icon: HandCoins,
-        items: [
-          {
-            title: "Users",
-            url: "/user/dashboard/estimates",
-            icon: Users,
-          },
-          {
-            title: "Pending Users",
-            url: "/user/dashboard/pending-users",
-            icon: InfoIcon,
-          },
-        ],
+        // items: [
+        //   {
+        //     title: "Users",
+        //     url: "/user/dashboard/estimates",
+        //     icon: Users,
+        //   },
+        //   {
+        //     title: "Pending Users",
+        //     url: "/user/dashboard/pending-users",
+        //     icon: InfoIcon,
+        //   },
+        // ],
+      },
+      {
+        title: "Subscription",
+        url: "/admin/dashboard/subscription",
+        icon: User,
       },
       {
         title: "Your Profile",

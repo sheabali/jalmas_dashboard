@@ -1,8 +1,9 @@
+import ForgotPassword from "@/components/auth/forgot_password";
 
 const ForgotPasswordPage = () => {
   return (
     <div>
-      <h1>Forgot Password</h1>
+      <ForgotPassword />
     </div>
   );
 };
