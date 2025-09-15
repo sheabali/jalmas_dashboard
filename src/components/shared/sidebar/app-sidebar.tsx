@@ -1,6 +1,5 @@
 "use client";
 
-import Logo from "@/assets/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -8,7 +7,17 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { HandCoins, Home, LayoutDashboard, User } from "lucide-react";
+import {
+  CreditCard,
+  FileQuestion,
+  Home,
+  LayoutDashboard,
+  MessageSquare,
+  ShieldCheck,
+  Star,
+  User,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { NavMain } from "./nav-main";
@@ -34,6 +43,7 @@ const data = {
       },
     ],
   },
+
   admin: {
     navMain: [
       {
@@ -44,54 +54,37 @@ const data = {
       {
         title: "Users",
         url: "/admin/dashboard/users",
-        icon: HandCoins,
-        // items: [
-        //   {
-        //     title: "Users",
-        //     url: "/user/dashboard/estimates",
-        //     icon: Users,
-        //   },
-        //   {
-        //     title: "Pending Users",
-        //     url: "/user/dashboard/pending-users",
-        //     icon: InfoIcon,
-        //   },
-        // ],
+        icon: Users,
       },
       {
         title: "Subscription",
         url: "/admin/dashboard/subscription",
-        icon: User,
+        icon: CreditCard,
       },
       {
         title: "Question",
         url: "/admin/dashboard/question",
-        icon: User,
+        icon: FileQuestion,
       },
       {
         title: "Privacy Policy",
         url: "/admin/dashboard/privacy-policy",
-        icon: User,
+        icon: ShieldCheck,
       },
       {
         title: "Messages",
         url: "/admin/dashboard/messages",
-        icon: User,
+        icon: MessageSquare,
       },
       {
         title: "Feedback",
         url: "/admin/dashboard/feedback",
-        icon: User,
+        icon: Star,
       },
       {
         title: "Profile",
         url: "/admin/dashboard/profile",
         icon: User,
-      },
-      {
-        title: "Go Back To Home",
-        url: "/",
-        icon: Home,
       },
     ],
   },
@@ -108,20 +101,20 @@ export default function AppSidebar({ role, ...props }: AppSidebarProps) {
   return (
     <Sidebar
       collapsible="icon"
-      className="w-64 bg-white border-r border-blue-200"
+      className="w-64 border-r border-blue-200"
       {...props}
     >
-      <SidebarHeader>
+      <SidebarHeader className="bg-[#F5F5F5] ">
         <Link
           href={"/"}
           className="flex items-center w-full max-h-40 justify-center"
         >
           <Image
-            src={Logo.src}
+            src="/dashboardLogo.svg"
             alt="Logo"
-            width={300}
-            height={300}
-            className="size-auto "
+            width={100}
+            height={100}
+            className="size-auto w-44"
           />
         </Link>
       </SidebarHeader>
