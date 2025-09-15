@@ -87,3 +87,4 @@ To run this project, you will need to add the following environment variables to
 
  Note: This starter in under development so there may have bug or any issues. if you find something irrelevant kindly contact with the developer.
 
+# jalmas_dashboard
