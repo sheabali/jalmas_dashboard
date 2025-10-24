@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -9,13 +10,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  useResendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/redux/api/authApi";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function OTP() {
+  const params = useSearchParams();
+  const email = params.get("email");
+
   const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", ""]);
+
+  const [verifyOTP, { isLoading }] = useVerifyOtpMutation();
+  const [reSendOTP, { isLoading: isResending }] = useResendOtpMutation();
+
+  const handleReSend = async () => {
+    console.log("Resend OTP");
+
+    try {
+      const res: any = await reSendOTP({ email }).unwrap();
+
+      if (res?.success) {
+        toast.success(res.message || "OTP resent successfully!");
+      } else {
+        toast.error(res.message || "Failed to resend OTP, please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error resending OTP:", error);
+      toast.error(error?.data?.message || "Failed to resend OTP.");
+    }
+  };
 
   const handleChange = (value: string, index: number) => {
     if (/^[0-9]?$/.test(value)) {
@@ -32,14 +61,27 @@ export default function OTP() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const enteredOtp = otp.join("");
 
+    const enteredOtp = otp.join("");
     console.log("Submitted OTP:", enteredOtp);
-    router.push("/change-password");
+
+    const payload = { email, otp: Number(enteredOtp) };
 
     try {
-    } catch (error) {
+      // Await the API call properly
+      const res = await verifyOTP(payload).unwrap();
+      console.log("res", res);
+
+      if (res?.success) {
+        toast.success(res.message || "OTP verified successfully!");
+        localStorage.setItem("verifiedOTP", res.data.token || "");
+        router.push(`/change-password?email=${email}`);
+      } else {
+        toast.error(res.message || "Invalid OTP, please try again.");
+      }
+    } catch (error: any) {
       console.error("Error verifying OTP:", error);
+      toast.error(error?.data?.message || "Failed to verify OTP.");
     }
   };
 
@@ -102,10 +144,11 @@ export default function OTP() {
                 Didn’t get a code?{" "}
                 <button
                   type="button"
-                  className="text-green-600 font-medium hover:underline"
-                  onClick={() => console.log("Resend OTP")}
+                  className="text-green-600 border-none font-medium hover:underline"
+                  onClick={() => handleReSend()}
+                  disabled={isResending}
                 >
-                  Click to resend
+                  {isResending ? "Resending..." : "Resend"}
                 </button>
               </p>
 
@@ -113,6 +156,8 @@ export default function OTP() {
               <Button
                 type="submit"
                 className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-medium"
+                disabled={isLoading}
+                isLoading={isLoading}
               >
                 Continue
               </Button>

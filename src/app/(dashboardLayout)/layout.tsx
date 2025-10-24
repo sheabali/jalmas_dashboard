@@ -15,8 +15,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const token = useAppSelector((state) => state.auth.token);
+
+  console.log("token form layout", token);
+
   const decodedToken = useDecodedToken(token);
-  const role = decodedToken?.role || "ADMIN";
+
+  console.log("decodedToken", decodedToken);
+
+  const role = decodedToken?.role || "USER";
 
   return (
     <SidebarProvider>

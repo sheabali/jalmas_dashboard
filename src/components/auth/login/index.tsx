@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,13 +18,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginMutation } from "@/redux/api/authApi";
+import { setUser } from "@/redux/features/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { setCookie } from "@/utils/cookies";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -37,6 +44,8 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [login_user, { isLoading }] = useLoginMutation();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,20 +57,34 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const res = await login_user(values).unwrap();
 
-    router.push("/admin/dashboard");
+      if (res?.success) {
+        toast.success(res.message || "Login successful!");
+        const token = res.data.token;
+        setCookie(token);
 
-    // Handle login logic here
+        const user = jwtDecode<JwtPayload>(token);
+        dispatch(setUser({ token, user }));
+
+        router.push("/admin/dashboard");
+      } else {
+        toast.error(res?.message || "Login failed!");
+      }
+    } catch (error: any) {
+      console.error("Login failed:", error);
+      toast.error(error?.data?.message || "Something went wrong during login.");
+    }
   }
 
   return (
     <div className="min-h-screen flex">
+      {/* Left Section */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#01411C] to-[#01411C] relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10" />
 
-        {/* Centered content */}
         <div className="relative z-10 flex items-center justify-center w-full h-full p-12 text-white">
           <div className="flex items-center justify-center">
             <Image
@@ -74,11 +97,10 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Decorative circles */}
-        <div className="absolute top-20 right-20 w-32 h-32 rounded-full ">
+        <div className="absolute top-20 right-20 w-32 h-32 rounded-full">
           <Image
             src="/Frame.png"
-            alt="HUMkadam Logo"
+            alt="Decor"
             width={500}
             height={230}
             className="object-contain"
@@ -86,6 +108,7 @@ export default function LoginPage() {
         </div>
       </div>
 
+      {/* Right Section */}
       <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="space-y-1 text-center">
@@ -93,16 +116,17 @@ export default function LoginPage() {
               Welcome back
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Welcome back! Continue to control your app & manage everything
-              properly.
+              Continue managing your app efficiently.
             </CardDescription>
           </CardHeader>
+
           <CardContent>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
+                {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -113,7 +137,7 @@ export default function LoginPage() {
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter Your E-mail"
+                          placeholder="Enter your email"
                           type="email"
                           className="h-12 border-gray-200 focus:border-green-500 focus:ring-green-500"
                           {...field}
@@ -123,6 +147,8 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Password */}
                 <FormField
                   control={form.control}
                   name="password"
@@ -134,7 +160,7 @@ export default function LoginPage() {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            placeholder="Enter Your Password"
+                            placeholder="Enter your password"
                             type={showPassword ? "text" : "password"}
                             className="h-12 border-gray-200 focus:border-green-500 focus:ring-green-500 pr-10"
                             {...field}
@@ -158,6 +184,8 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Forgot Password */}
                 <div className="flex justify-end">
                   <Link href="/forgot-password">
                     <Button
@@ -169,11 +197,14 @@ export default function LoginPage() {
                     </Button>
                   </Link>
                 </div>
+
+                {/* Submit */}
                 <Button
                   type="submit"
                   className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-medium"
+                  disabled={isLoading}
                 >
-                  Log in
+                  {isLoading ? "Logging in..." : "Log in"}
                 </Button>
               </form>
             </Form>

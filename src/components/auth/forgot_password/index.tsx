@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,10 +18,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useForgotPasswordMutation } from "@/redux/api/authApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -30,6 +33,8 @@ const formSchema = z.object({
 });
 
 export default function ForgotPassword() {
+  const [forgot_password, { isLoading }] = useForgotPasswordMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,11 +44,23 @@ export default function ForgotPassword() {
 
   const router = useRouter();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("values", values);
-    // Handle forgot password request (e.g., send reset email)
 
-    router.push("/forgot-password/otp");
+    try {
+      // Await the API call properly
+      const res = await forgot_password({ email: values.email }).unwrap();
+
+      if (res?.success) {
+        toast.success(res.message || "Password reset link sent successfully!");
+        router.push(`/forgot-password/otp?email=${values.email}`);
+      } else {
+        toast.error(res.message || "Failed to send password reset link.");
+      }
+    } catch (error: any) {
+      console.error("Error sending password reset link:", error);
+      toast.error(error?.data?.message || "An unexpected error occurred.");
+    }
   }
 
   return (
@@ -112,6 +129,8 @@ export default function ForgotPassword() {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-green-600 hover:bg-green-700 text-white font-medium"
+                  disabled={isLoading}
+                  isLoading={isLoading}
                 >
                   Send Reset Link
                 </Button>

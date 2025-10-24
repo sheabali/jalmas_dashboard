@@ -16,36 +16,87 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Mail, MapPin, Pencil, Phone, User } from "lucide-react";
+import {
+  useGetUserQuery,
+  useUpdateUserProfileMutation,
+} from "@/redux/features/dashboardManagementApi";
+import { Camera, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner"; // or your toast library
 
 const profileSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email"),
-  phone: z.string().min(10, "Phone number too short"),
-  address: z.string().min(5, "Address too short"),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  const { data: userData, refetch } = useGetUserQuery({});
+  const [updateProfile, { isLoading }] = useUpdateUserProfileMutation();
+  const user = userData?.data;
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: "John Almas",
-      email: "jhonalmas@gmail.com",
-      phone: "7682862469469",
-      address: "Aralia, Savar, Dhaka, BD",
+      fullName: user?.fullName || "",
+      email: user?.email || "",
+    },
+    values: {
+      fullName: user?.fullName || "",
+      email: user?.email || "",
     },
   });
 
-  function onSubmit(values: ProfileFormData) {
-    console.log("Updated Profile:", values);
-    setEditMode(false);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  async function onSubmit(values: ProfileFormData) {
+    try {
+      const formData = new FormData();
+
+      // Create data object matching backend structure
+      const data = {
+        fullName: values.fullName,
+      };
+
+      formData.append("data", JSON.stringify(data));
+
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+
+      await updateProfile(formData).unwrap();
+
+      toast.success("Profile updated successfully!");
+      setEditMode(false);
+      setSelectedImage(null);
+      setPreviewUrl("");
+      refetch();
+    } catch (error: any) {
+      console.error("Failed to update profile:", error);
+      toast.error(error?.data?.message || "Failed to update profile");
+    }
   }
+
+  const displayImage =
+    previewUrl ||
+    user?.image ||
+    "https://i.ibb.co.com/pCzqP9S/icon-7797704-640.png";
 
   return (
     <div className="container mx-auto mt-2 p-6">
@@ -67,14 +118,31 @@ export default function ProfilePage() {
           </CardHeader>
 
           <CardContent>
-            <div className="flex flex-col items-center gap-2 mb-6">
-              <Image
-                src="https://i.ibb.co.com/pCzqP9S/icon-7797704-640.png"
-                alt="profile"
-                width={80}
-                height={80}
-                className="rounded-full border-2 border-white"
-              />
+            <div className="flex flex-col items-center gap-2 mb-6 relative">
+              <div className="relative">
+                <Image
+                  src={displayImage}
+                  alt="profile"
+                  width={80}
+                  height={80}
+                  className="rounded-full border-2 border-white object-cover"
+                />
+                {editMode && (
+                  <label
+                    htmlFor="profile-image"
+                    className="absolute bottom-0 right-0 bg-white text-green-900 rounded-full p-1.5 cursor-pointer hover:bg-gray-100 transition"
+                  >
+                    <Camera size={16} />
+                    <input
+                      id="profile-image"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
 
             <Form {...form}>
@@ -86,7 +154,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="name"
+                    name="fullName"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -95,7 +163,6 @@ export default function ProfilePage() {
                             disabled={!editMode}
                             placeholder="Full Name"
                             className="text-black bg-white"
-                            prefix={(<User />) as any}
                           />
                         </FormControl>
                         <FormMessage />
@@ -110,50 +177,9 @@ export default function ProfilePage() {
                         <FormControl>
                           <Input
                             {...field}
-                            disabled={!editMode}
+                            disabled={true}
                             placeholder="Email"
                             className="text-black bg-white"
-                            prefix={(<Mail />) as any}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Phone + Address */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            disabled={!editMode}
-                            placeholder="Phone"
-                            className="text-black bg-white"
-                            prefix={(<Phone />) as any}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            disabled={!editMode}
-                            placeholder="Address"
-                            className="text-black bg-white"
-                            prefix={(<MapPin />) as any}
                           />
                         </FormControl>
                         <FormMessage />
@@ -165,14 +191,15 @@ export default function ProfilePage() {
                 {editMode ? (
                   <Button
                     type="submit"
+                    disabled={isLoading}
                     className="w-full bg-green-700 hover:bg-green-600"
                   >
-                    Save Changes
+                    {isLoading ? "Saving..." : "Save Changes"}
                   </Button>
                 ) : (
                   <Link
                     href="/admin/dashboard/profile/change-password"
-                    className="w-full bg-green-700 hover:bg-green-600"
+                    className="w-full"
                   >
                     <Button
                       type="button"

@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  BaseQueryFn,
-  createApi,
-  FetchArgs,
-  fetchBaseQuery,
-  FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { logout } from "../features/authSlice";
 import { RootState } from "../store";
-import { logout, setUser } from "../features/authSlice";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -23,7 +17,9 @@ const baseQueryWithAuth: ReturnType<typeof fetchBaseQuery> = async (
   const rawBaseQuery = fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.token;
+      const token = (
+        getState() as RootState & { auth: { token: string | null } }
+      ).auth?.token;
       if (token) {
         headers.set("Authorization", `${token}`);
       }
@@ -50,7 +46,7 @@ const baseQueryWithAuth: ReturnType<typeof fetchBaseQuery> = async (
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["User"],
+  tagTypes: ["User", "ADMIN"],
   endpoints: (builder) => ({}),
 });
 
