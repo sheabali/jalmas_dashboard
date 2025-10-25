@@ -15,33 +15,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { BellDot, ChevronDown } from "lucide-react";
+import { logout } from "@/redux/features/authSlice";
+import { useGetUserQuery } from "@/redux/features/dashboardManagementApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function UserAvatarDropdown() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const { data: user } = useGetUserQuery({});
+
+  console.log("user0", user?.data);
 
   const handleLogout = () => {
+    dispatch(logout());
     router.push("/");
+    // window.location.reload();
   };
 
   return (
     <>
       {/* Top Bar */}
       <div className="flex items-center gap-6">
-        {/* Bell Icon to open modal */}
-        <div
-          onClick={() => setOpen(true)}
-          className="cursor-pointer hover:opacity-80"
-        >
-          <BellDot className="h-6 w-6 text-muted-foreground" />
-        </div>
-
         {/* User Info */}
         <div>
-          <h1 className="font-semibold">Jhon Alex</h1>
+          <h1 className="font-semibold">{user?.data?.fullName}</h1>
           <p className="text-xs text-muted-foreground">Super Admin</p>
         </div>
 
@@ -51,7 +53,7 @@ export default function UserAvatarDropdown() {
             <div className="flex items-center gap-2 cursor-pointer">
               <Avatar className="h-10 w-10">
                 <AvatarImage
-                  src="https://i.ibb.co/mVjzdhHW/Rectangle-23852.png"
+                  src={user?.data?.image || "https://i.pravatar.cc/150?u=1"}
                   alt="User avatar"
                 />
                 <AvatarFallback>CN</AvatarFallback>

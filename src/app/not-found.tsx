@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
-import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -21,14 +20,14 @@ export default function NotFound() {
           className="w-full max-w-sm mx-auto h-64 md:h-80"
           src="https://lottie.host/embed/9a0ea178-1368-4057-a575-e8c6e921499a/FzDqBHrNXn.lottie"
         ></iframe>
-
-        <Button asChild className="mt-8">
-          <Link href="/">
-            <Home className="mr-2 h-4 w-4" />
-            Back to Home
-          </Link>
-        </Button>
       </div>
+      <Button
+        className="mt-8 flex items-center gap-2"
+        onClick={() => (window.location.href = "/")}
+      >
+        <Home className="h-4 w-4" />
+        Back to Home
+      </Button>
     </div>
   );
 }

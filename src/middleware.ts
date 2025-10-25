@@ -1,31 +1,51 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("accessToken")?.value;
-  const loginUrl = new URL("/login", request.url);
+const authRoutes = ["/login", "/register", "/payment-guide"];
 
-  // Redirect to login if token is not present
-  if (!token) {
-    return NextResponse.redirect(loginUrl);
-  }
+const roleBasedPrivateRoutes = {
+  ADMIN: [/^\/admin/],
+};
 
+type Role = keyof typeof roleBasedPrivateRoutes;
+
+export const middleware = async (request: NextRequest) => {
+  const { pathname } = request.nextUrl;
+  const token = (await cookies()).get("token")?.value;
+
+  let userInfo: { role: string } | null = null;
   try {
-    const user = jwtDecode(token);
-    console.log(user, "user from middleware");
-
-    // check the user role and redirect and restrict here
-  } catch (error) {
-    console.error("Error decoding token:", error);
-    return NextResponse.redirect(loginUrl);
+    if (token) {
+      userInfo = jwtDecode<{ role: string }>(token);
+    }
+  } catch (err) {
+    console.error("Invalid token:", err);
+    userInfo = null;
   }
 
-  // Proceed to the requested route
-  return NextResponse.next();
-}
+  // Public routes
+  if (!userInfo) {
+    if (authRoutes.includes(pathname)) {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(
+      new URL(`/?redirectPath=${encodeURIComponent(pathname)}`, request.url)
+    );
+  }
 
-// "Matching Paths"
+  // Role-based access
+  const userRole = userInfo.role as Role;
+  if (userRole && roleBasedPrivateRoutes[userRole]) {
+    const allowedRoutes = roleBasedPrivateRoutes[userRole];
+    const hasAccess = allowedRoutes.some((route) => pathname.match(route));
+    if (hasAccess) return NextResponse.next();
+  }
+
+  // Default redirect if unauthorized
+  return NextResponse.redirect(new URL("/", request.url));
+};
+
 export const config = {
-  matcher: [],
+  matcher: ["/admin/:path*"],
 };
