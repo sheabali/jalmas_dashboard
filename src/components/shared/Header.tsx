@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import GetHeaderTitle from "./GetHeaderTitle";
 
 function Header() {
@@ -19,7 +18,7 @@ function Header() {
             <div className="text-muted-foreground text-xs">Customer Service</div>
           </div> */}
           <div className="relative">
-            <IoIosNotificationsOutline className="h-10 w-10 text-[#817f9b]" />
+            {/* <IoIosNotificationsOutline className="h-10 w-10 text-[#817f9b]" /> */}
             <span className="absolute top-1.5 right-1.5 bg-primary text-white rounded-full w-3 h-3 flex items-center justify-center text-xs"></span>
           </div>
           <Image

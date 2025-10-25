@@ -76,6 +76,31 @@ export const dashboardManagementApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    changePasswordAdmin: builder.mutation({
+      query: (data) => ({
+        url: "/auth/change-password",
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    analyticsFeedback: builder.query({
+      query: ({
+        search,
+        page,
+        limit,
+      }: {
+        search: string;
+        page: number;
+        limit: number;
+      }) => ({
+        url: `/analytics/feedback/${`?searchTerm=${encodeURIComponent(
+          search
+        )}&page=${page}&limit=${limit}`}`,
+        method: "GET",
+      }),
+      providesTags: ["ADMIN"],
+    }),
   }),
 });
 
@@ -89,4 +114,6 @@ export const {
   useUpdateSubscriptionMutation,
   useGetUserQuery,
   useUpdateUserProfileMutation,
+  useChangePasswordAdminMutation,
+  useAnalyticsFeedbackQuery,
 } = dashboardManagementApi;

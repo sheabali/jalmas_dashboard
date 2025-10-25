@@ -119,20 +119,21 @@ export default function ProfilePage() {
 
           <CardContent>
             <div className="flex flex-col items-center gap-2 mb-6 relative">
-              <div className="relative">
+              <div className="relative flex justify-center items-center">
                 <Image
                   src={displayImage}
                   alt="profile"
-                  width={80}
-                  height={80}
-                  className="rounded-full border-2 border-white object-cover"
+                  width={100}
+                  height={100}
+                  className="rounded-full border-2 border-white object-cover w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32"
                 />
+
                 {editMode && (
                   <label
                     htmlFor="profile-image"
-                    className="absolute bottom-0 right-0 bg-white text-green-900 rounded-full p-1.5 cursor-pointer hover:bg-gray-100 transition"
+                    className="absolute bottom-1 right-1 bg-white text-green-900 rounded-full p-1.5 cursor-pointer hover:bg-gray-100 transition border shadow-sm"
                   >
-                    <Camera size={16} />
+                    <Camera size={16} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     <input
                       id="profile-image"
                       type="file"
