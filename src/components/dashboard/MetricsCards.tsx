@@ -1,4 +1,4 @@
-import { DollarSign, UserPlus, Users, UserX } from "lucide-react";
+import { UserPlus, Users, UserX } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 
 interface MetricsProps {
@@ -81,7 +81,7 @@ const MetricsCards = ({ metrics }: MetricsProps) => {
                 </p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
-                <DollarSign className="h-6 w-6 text-purple-600" />
+                <p className="h-6 w-6 text-purple-600"> Rs</p>
               </div>
             </div>
           </CardContent>
