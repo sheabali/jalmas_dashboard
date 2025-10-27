@@ -101,6 +101,12 @@ export const dashboardManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: ["ADMIN"],
     }),
+    getPurchasedPlans: builder.query({
+      query: (limit = 5) => ({
+        url: `/purchased-plan?limit=${limit}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -116,4 +122,5 @@ export const {
   useUpdateUserProfileMutation,
   useChangePasswordAdminMutation,
   useAnalyticsFeedbackQuery,
+  useGetPurchasedPlansQuery,
 } = dashboardManagementApi;

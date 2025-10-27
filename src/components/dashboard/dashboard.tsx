@@ -43,8 +43,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="container mx-auto space-y-6">
+    <div className="min-h-auto bg-gray-50 p-6">
+      <div className=" mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-gray-900">
