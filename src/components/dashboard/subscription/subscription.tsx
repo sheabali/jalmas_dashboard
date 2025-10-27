@@ -219,7 +219,7 @@ export default function SubscriptionPage() {
                     >
                       <td className="py-4 px-4 text-gray-900">{plan.title}</td>
                       <td className="py-4 px-4 text-gray-900">
-                        {plan.price} PKR
+                        {plan.price} Rs
                       </td>
                       <td className="py-4 px-4 text-gray-600">
                         {plan.duration} days

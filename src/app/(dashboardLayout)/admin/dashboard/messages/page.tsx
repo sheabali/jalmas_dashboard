@@ -1,7 +1,7 @@
-import MessagesPage from "@/components/dashboard/Message";
+import CommonMessage from "@/components/dashboard/Message";
 
 function Messages() {
-  return <MessagesPage />;
+  return <CommonMessage />;
 }
 
 export default Messages;

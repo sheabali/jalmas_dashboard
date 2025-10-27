@@ -77,7 +77,7 @@ const MetricsCards = ({ metrics }: MetricsProps) => {
                   Monthly Revenue
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
-                  ${metrics?.totalRevenue?.toFixed(2) ?? "0.00"}
+                  Rs {metrics?.totalRevenue?.toFixed(2) ?? "0.00"}
                 </p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">

@@ -121,7 +121,7 @@ export default function QuestionManagementPage() {
 
     setEditingPlan({
       planName: plan.name,
-      price: plan.price.replace(" PKR", ""),
+      price: plan.price.replace(" Rs", ""),
       duration: plan.duration.toLowerCase().replace(" ", "-"),
       features: featureData,
     });
