@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   CreditCard,
-  FileQuestion,
   Home,
   LayoutDashboard,
   MessageSquare,
@@ -61,11 +60,11 @@ const data = {
         url: "/admin/dashboard/subscription",
         icon: CreditCard,
       },
-      {
-        title: "Question",
-        url: "/admin/dashboard/question",
-        icon: FileQuestion,
-      },
+      // {
+      //   title: "Question",
+      //   url: "/admin/dashboard/question",
+      //   icon: FileQuestion,
+      // },
       {
         title: "Privacy Policy",
         url: "/admin/dashboard/privacy-policy",
